@@ -4,55 +4,68 @@ This repository contains the Unemployment Analysis Project completed as part of 
 
 CodeAlpha_UnemploymentAnalysis
 
-This project was completed as part of the **CodeAlpha Data Science Internship**.
+ Unemployment Rate Analysis (2018–2022)
 
- 📌 Project Overview
-The objective of this project is to analyze unemployment rate trends over time using Python.  
-It focuses on identifying seasonal patterns, comparing Covid and non-Covid periods, and visualizing unemployment data for better understanding.
+ Overview:
 
-Synthetic monthly unemployment data from **2018 to 2022** is used to simulate real-world unemployment trends.
+This project performs a time-series analysis of unemployment rates from 2018 to 2022 using Python.
+It focuses on identifying overall trends, the impact of COVID-19, and seasonal patterns using data visualization techniques.
+The dataset used in this project is synthetically generated to simulate real-world unemployment behavior.
 
----
- Technologies Used:
-- Python
-- Pandas
-- NumPy
-- Matplotlib
----
+Tech Stack:
+
+•Python
+•Pandas – Data analysis and manipulation
+•Matplotlib – Data visualization
+
+📂 Project Structure
+
+├── unemployment_analysis.py
+├── README.md
+
+ Data Description:
+
+•Date: Monthly data from January 2018 to December 2022
+•Unemployment_Rate (%): Simulated unemployment values
+
 Key Features:
-- Monthly unemployment rate analysis
-- Covid vs Non-Covid unemployment comparison
-- Seasonal heatmap visualization
-- Time-based feature extraction (Year & Month)
-- Statistical comparison using average unemployment rates
 
----
- Methodology
-1. Created monthly date range from 2018–2022  
-2. Simulated unemployment rates with Covid impact  
-3. Built a structured DataFrame using Pandas  
-4. Extracted year and month features  
-5. Visualized seasonal trends using a heatmap  
-6. Compared average unemployment rates during Covid and non-Covid periods  
+•Time-series unemployment trend analysis
+•3-month rolling average computation
+•COVID-19 impact visualization
+•Seasonal unemployment pattern analysis
 
----
- Visualizations
-- Seasonal heatmap showing unemployment rate variations across years
-- Color-coded representation of unemployment intensity
+Visualizations:
 
----
- Covid Impact Analysis
-- Higher unemployment rates observed during Covid-affected years
-- Gradual recovery trend noticed in post-Covid period
-- Clear difference between Covid and non-Covid average unemployment rates
+•Unemployment trend with rolling average
+•COVID-19 impact on unemployment
+Seasonal unemployment pattern by month
 
---
- Conclusion:
-This project demonstrates the use of Python for data analysis and visualization to understand unemployment trends.  
-It highlights how external factors like Covid-19 significantly impact employment patterns and economic stability.
+How to Run:
 
----
- Author
-**Jafrin J**  
-B.Tech – Artificial Intelligence & Data Science  
-CodeAlpha Data Science Intern
+1.Install the required libraries:
+
+pip install pandas matplotlib
+
+2.Run the Python file:
+
+python unemployment_analysis.py
+
+Output:
+
+•Displays the first 10 rows of unemployment data
+•Generates multiple plots for analysis
+
+Learning Outcomes:
+
+•Understanding time-series data
+•Applying rolling averages
+•Analyzing the effect of real-world events using data
+•Visualizing data effectively
+
+Author
+Jafrin J
+
+License:
+
+This project is created for educational purposes only
