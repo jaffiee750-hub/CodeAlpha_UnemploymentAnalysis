@@ -1,60 +1,62 @@
 import pandas as pd
-import numpy as np
 import matplotlib.pyplot as plt
 
-# Create monthly date range
-dates = pd.date_range("2018-01-01", "2022-12-01", freq="MS")
+# Create date range (monthly data)
+dates = pd.date_range(start="2018-01-01", end="2022-12-01", freq="MS")
 
-# Create unemployment data
+# Create unemployment rate pattern
 rates = []
-covid_flag = []
 
-for d in dates:
-    if d.year == 2020:
-        rates.append(9 + np.sin(d.month) * 0.8)   # Covid shock
-        covid_flag.append(1)
-    elif d.year == 2021:
-        rates.append(7 - d.month * 0.05)          # Recovery phase
-        covid_flag.append(1)
+for date in dates:
+    if date.year == 2020:
+        rates.append(9 + (date.month % 3))   # Covid spike
+    elif date.year == 2021:
+        rates.append(7 - (date.month * 0.05))  # Recovery
+    elif date.year == 2022:
+        rates.append(5.8 - (date.month * 0.03))  # Stabilization
     else:
-        rates.append(5.4 + np.cos(d.month) * 0.3) # Normal variation
-        covid_flag.append(0)
+        rates.append(5.2 + (date.month * 0.02))  # Normal years
 
-# Build DataFrame
+# Create DataFrame
 df = pd.DataFrame({
     "Date": dates,
-    "Unemployment_Rate": rates,
-    "Covid_Impact": covid_flag
+    "Unemployment_Rate": rates
 })
 
-# Extract Year and Month
-df["Year"] = df["Date"].dt.year
-df["Month"] = df["Date"].dt.month
+# Rolling average (3-month)
+df["Rolling_Avg"] = df["Unemployment_Rate"].rolling(window=3).mean()
 
-print(df.head())
+# Display data
+print(df.head(10))
 
-# -------- Heatmap Preparation --------
-heatmap_data = df.pivot_table(
-    values="Unemployment_Rate",
-    index="Month",
-    columns="Year"
-)
-
-# -------- Heatmap Plot --------
+# ----------- Visualization 1: Trend -----------
 plt.figure()
-plt.imshow(heatmap_data, aspect="auto")
-plt.colorbar(label="Unemployment Rate (%)")
-plt.title("Seasonal Heatmap of Unemployment Rate")
+plt.plot(df["Date"], df["Unemployment_Rate"], label="Actual Rate")
+plt.plot(df["Date"], df["Rolling_Avg"], label="3-Month Rolling Average")
+plt.title("Unemployment Trend with Rolling Average")
 plt.xlabel("Year")
-plt.ylabel("Month")
-plt.xticks(range(len(heatmap_data.columns)), heatmap_data.columns)
-plt.yticks(range(12), range(1, 13))
+plt.ylabel("Unemployment Rate (%)")
+plt.legend()
 plt.show()
 
-# -------- Covid vs Non-Covid Comparison --------
-covid_avg = df[df["Covid_Impact"] == 1]["Unemployment_Rate"].mean()
-normal_avg = df[df["Covid_Impact"] == 0]["Unemployment_Rate"].mean()
+# ----------- Visualization 2: Covid Highlight -----------
+covid_period = df[(df["Date"] >= "2020-03-01") & (df["Date"] <= "2020-12-01")]
 
-print("\nAverage Unemployment Rate:")
-print("Covid Period:", round(covid_avg, 2))
-print("Non-Covid Period:", round(normal_avg, 2))
+plt.figure()
+plt.plot(df["Date"], df["Unemployment_Rate"])
+plt.scatter(covid_period["Date"], covid_period["Unemployment_Rate"])
+plt.title("Covid-19 Impact on Unemployment")
+plt.xlabel("Year")
+plt.ylabel("Unemployment Rate (%)")
+plt.show()
+
+# ----------- Seasonal Analysis -----------
+df["Month"] = df["Date"].dt.month
+seasonal_avg = df.groupby("Month")["Unemployment_Rate"].mean()
+
+plt.figure()
+seasonal_avg.plot(kind="line", marker="o")
+plt.title("Seasonal Unemployment Pattern")
+plt.xlabel("Month")
+plt.ylabel("Average Unemployment Rate (%)")
+plt.show()
