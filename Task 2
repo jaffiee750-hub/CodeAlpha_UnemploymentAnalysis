@@ -1,0 +1,60 @@
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+
+# Create monthly date range
+dates = pd.date_range("2018-01-01", "2022-12-01", freq="MS")
+
+# Create unemployment data
+rates = []
+covid_flag = []
+
+for d in dates:
+    if d.year == 2020:
+        rates.append(9 + np.sin(d.month) * 0.8)   # Covid shock
+        covid_flag.append(1)
+    elif d.year == 2021:
+        rates.append(7 - d.month * 0.05)          # Recovery phase
+        covid_flag.append(1)
+    else:
+        rates.append(5.4 + np.cos(d.month) * 0.3) # Normal variation
+        covid_flag.append(0)
+
+# Build DataFrame
+df = pd.DataFrame({
+    "Date": dates,
+    "Unemployment_Rate": rates,
+    "Covid_Impact": covid_flag
+})
+
+# Extract Year and Month
+df["Year"] = df["Date"].dt.year
+df["Month"] = df["Date"].dt.month
+
+print(df.head())
+
+# -------- Heatmap Preparation --------
+heatmap_data = df.pivot_table(
+    values="Unemployment_Rate",
+    index="Month",
+    columns="Year"
+)
+
+# -------- Heatmap Plot --------
+plt.figure()
+plt.imshow(heatmap_data, aspect="auto")
+plt.colorbar(label="Unemployment Rate (%)")
+plt.title("Seasonal Heatmap of Unemployment Rate")
+plt.xlabel("Year")
+plt.ylabel("Month")
+plt.xticks(range(len(heatmap_data.columns)), heatmap_data.columns)
+plt.yticks(range(12), range(1, 13))
+plt.show()
+
+# -------- Covid vs Non-Covid Comparison --------
+covid_avg = df[df["Covid_Impact"] == 1]["Unemployment_Rate"].mean()
+normal_avg = df[df["Covid_Impact"] == 0]["Unemployment_Rate"].mean()
+
+print("\nAverage Unemployment Rate:")
+print("Covid Period:", round(covid_avg, 2))
+print("Non-Covid Period:", round(normal_avg, 2))
